@@ -8,7 +8,6 @@ use FaimMedia\BackOfficeClient\Exception\RequestException;
 
 class Request {
 
-	const API_URL_SUFFIX = '.api.mailchimp.com/3.0/';
 	const USER_AGENT = 'FaimMedia/PHP-Backoffice-Client-API';
 
 	private $_client;
@@ -38,24 +37,29 @@ class Request {
 	/**
 	 * Get access token
 	 */
-	public function authorize() {
+	public function authorize(int $clientId, string $clientSecret, string $grantType = 'client_credentials') {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->createUrl('api/auth/token.json'));
 
 		$options = [
-			CURLOPT_POSTFIELDS => [
-				'grant_type'    => 'client_credentials',
-				'client_id'     => $this->getClient()->getClientId(),
-				'client_secret' => $this->getClient()->getClientSecret(),
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => 1,
+			CURLOPT_POSTFIELDS     => [
+				'grant_type'    => $grantType,
+				'client_id'     => $clientId,
+				'client_secret' => $clientSecret,
+			],
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json; charset=UTF-8',
 			],
 		];
 
 		curl_setopt_array($ch, $options);
 
-		$response = curl_exec($ch);
+		$json = $this->handleResponse($ch);
 
-		$info = curl_getinfo($ch);
-		$error = curl_error($ch);
+		var_dump($json);
+		die;
 	}
 
 	/**
@@ -64,7 +68,6 @@ class Request {
 	public function request($uri, $type = 'GET', $data = []) {
 		$options = [
 			CURLOPT_CUSTOMREQUEST  => strtoupper($type),
-			CURLOPT_HEADER         => true,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_HTTPHEADER     => [
@@ -85,7 +88,19 @@ class Request {
 		curl_setopt($ch, CURLOPT_URL, $this->createUrl($uri));
 		curl_setopt_array($ch, $options);
 
-		$response = curl_exec($ch);
+		$json = $this->handleResponse($ch);
+
+		return $json;
+	}
+
+	/**
+	 * Executes CURL requests and handles responses
+	 */
+	protected function handleResponse($ch, $response = null) {
+
+		if($response === null) {
+			$response = curl_exec($ch);
+		}
 
 		$info = curl_getinfo($ch);
 		$error = curl_error($ch);
@@ -94,9 +109,7 @@ class Request {
 
 		$isError = ((int)substr((string)$httpCode, 0, 2) !== 20);
 
-		@list($header, $body) = explode("\r\n\r\n", $response, 2);
-
-		$json = json_decode($body, true);
+		$json = json_decode($response, true);
 
 		if(json_last_error() !== JSON_ERROR_NONE) {
 			if($error) {
@@ -111,22 +124,24 @@ class Request {
 		}
 
 		if($isError) {
-			if(!empty($json['errors'])) {
-				error_log(json_encode($json['errors']));
+			if(!empty($json['error'])) {
+				error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
 			}
 
-			if(is_array($json) && (!empty($json['detail']) || !empty($json['title']))) {
-				throw new RequestException('MailChimp API error: '.(!empty($json['detail']) ? $json['detail'] : $json['title']));
+			if(is_array($json) && (!empty($json['error']))) {
+				throw new RequestException('Backoffice API error: '.(!empty($json['error'][0]['message']) ? $json['error'][0]['message'] : ''));
 			}
 
-			throw new RequestException('Undefined MailChimp API error, HTTP status code: '.$httpCode);
+			throw new RequestException('Undefined Backoffice API error, HTTP status code: '.$httpCode);
 		}
 
 		return $json;
 	}
 
-	public function createUrl($uri = null) {
-		return 'https://'.$this->getDataCenter().self::API_URL_SUFFIX.$uri;
+	/**
+	 * Generate full-URL by prepending protocol and domain to URI string
+	 */
+	public function createUrl($uri = null): string {
+		return $this->getClient()->getUrl().$uri;
 	}
-
 }

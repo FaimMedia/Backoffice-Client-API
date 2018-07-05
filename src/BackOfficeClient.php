@@ -30,6 +30,14 @@ class BackOfficeClient {
 	 * Set the server URL
 	 */
 	public function setUrl(string $url): self {
+		if(substr($url, 0, 8) !== 'https://' && substr($url, 0, 7) !== 'http://') {
+			$url = 'https://'.$url;
+		}
+
+		if(substr($url, -1) !== '/') {
+			$url .= '/';
+		}
+
 		$this->_url = $url;
 
 		return $this;
@@ -45,10 +53,17 @@ class BackOfficeClient {
 	/**
 	 * Set client ID
 	 */
-	public function setClientId($clientId): self {
+	public function setClientId(int $clientId): self {
 		$this->_clientId = $clientId;
 
 		return $this;
+	}
+
+	/**
+	 * Get client ID
+	 */
+	protected function getClientId(): int {
+		return $this->_clientId;
 	}
 
 	/**
@@ -61,6 +76,13 @@ class BackOfficeClient {
 	}
 
 	/**
+	 * Get client secret
+	 */
+	protected function getClientSecret(): string {
+		return $this->_clientSecret;
+	}
+
+	/**
 	 * Gets an active access token
 	 * If the access token is empty it attempts to get one
 	 * If the access token has expired, it attempts to get a new one with the refresh token
@@ -68,8 +90,9 @@ class BackOfficeClient {
 	public function getAccessToken(): string {
 		if(!$this->_accessToken || $this->isAccessTokenExpired()) {
 
-			$this->request->authorize();
+			$data = $this->request->authorize($this->getClientId(), $this->getClientSecret());
 
+			$this->_accessToken = $data[''];
 		}
 
 		return $this->_accessToken;
@@ -123,15 +146,4 @@ class BackOfficeClient {
 
 		return $invoice;
 	}
-
-	public static function uncamelize($str) {
-		$str = preg_replace(
-			["/([A-Z]+)/", "/_([A-Z]+)([A-Z][a-z])/"],
-			["_$1", "_$1_$2"],
-			lcfirst($str)
-		);
-
-		return strtolower($str);
-	}
-
 }
