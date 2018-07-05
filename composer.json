@@ -1,0 +1,25 @@
+{
+	"name": "faimmedia/backoffice-client-api",
+	"description": "",
+	"homepage": "https://github.com/FaimMedia/Backoffice-Client-API",
+
+	"license": "UNLICENSED",
+
+	"authors": [{
+		"name": "Tim Peters",
+		"email": "info@faimmedia.nl",
+		"homepage": "https://faimmedia.nl",
+		"role": "Developer"
+	}],
+
+	"require": {
+		"php": "7.*",
+		"ext-curl" : "*"
+	},
+
+	"autoload": {
+		"psr-4": {
+			"FaimMedia\\BackOfficeClientAPI\\": "src/"
+		}
+	}
+}
