@@ -16,6 +16,7 @@ class Request {
 	private $apiKey;
 
 	private $fullApiKey;
+	private $_debug = false;
 
 	/**
 	 * Set parent Client class
@@ -32,6 +33,22 @@ class Request {
 		$this->_client = $client;
 
 		return $this;
+	}
+
+	/**
+	 * Set debug mode
+	 */
+	public function setDebug(bool $debug = false): self {
+		$this->_debug = $debug;
+
+		return $this;
+	}
+
+	/**
+	 * Check if in debug mode
+	 */
+	public function isDebug(): bool {
+		return $this->_debug;
 	}
 
 	/**

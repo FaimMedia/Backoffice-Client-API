@@ -44,6 +44,15 @@ class BackOfficeClient {
 	}
 
 	/**
+	 * Set debug mode for Request instance
+	 */
+	public function setDebug($debug = false): self {
+		$this->request->setDebug($debug);
+
+		return $this;
+	}
+
+	/**
 	 * Get the server URL
 	 */
 	public function getUrl(): string {
