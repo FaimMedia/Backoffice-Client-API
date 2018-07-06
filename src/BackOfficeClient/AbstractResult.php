@@ -225,7 +225,7 @@ abstract class AbstractResult {
 		if($response) {
 			$this->isSaved = true;
 
-			return $this->set($response, null, false);
+			return $this->set($response['data'], null, false);
 		}
 
 		return false;
