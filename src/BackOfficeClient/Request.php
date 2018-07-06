@@ -56,7 +56,6 @@ class Request {
 	 * Get access token
 	 */
 	public function authorize(int $clientId, string $clientSecret, string $grantType = 'client_credentials') {
-		$ch = curl_init();
 
 		$options = [
 			CURLOPT_URL            => $this->createUrl('api/auth/token.json'),
@@ -74,6 +73,7 @@ class Request {
 			$options[CURLINFO_HEADER_OUT] = true;
 		}
 
+		$ch = curl_init();
 		curl_setopt_array($ch, $options);
 
 		$json = $this->handleResponse($ch);
