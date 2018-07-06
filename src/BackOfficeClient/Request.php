@@ -107,7 +107,6 @@ class Request {
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->createUrl($uri));
 		curl_setopt_array($ch, $options);
 
 		$json = $this->handleResponse($ch);
