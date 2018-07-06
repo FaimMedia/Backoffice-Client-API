@@ -104,7 +104,7 @@ class Request {
 			if($type != 'GET') {
 
 			// is post body
-				$options[CURLURL_POST] = true;
+				$options[CURLOPT_POST] = true;
 				$options[CURLOPT_POSTFIELDS] = $data;
 			} else {
 
