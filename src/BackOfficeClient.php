@@ -158,7 +158,7 @@ class BackOfficeClient {
 	 * Get folio
 	 */
 	public function folio($id = null) {
-		$folio = new Folio($this->request);
+		$folio = new Folio([], $this->request);
 
 		if($id) {
 			return $folio->getById($id);
@@ -171,7 +171,7 @@ class BackOfficeClient {
 	 * Get invoice
 	 */
 	public function invoice($id = null) {
-		$invoice = new Invoice($this->request);
+		$invoice = new Invoice([], $this->request);
 
 		if($id) {
 			return $invoice->getById($id);
