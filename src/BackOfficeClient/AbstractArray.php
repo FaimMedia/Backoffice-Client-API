@@ -18,9 +18,7 @@ abstract class AbstractArray implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Constructor to set
 	 */
-	public function __construct($request, $data = []) {
-		$this->request = $request;
-
+	public function __construct($data = []) {
 		$this->_data = $data;
 	}
 
