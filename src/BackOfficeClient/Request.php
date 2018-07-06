@@ -89,7 +89,7 @@ class Request {
 			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_HTTPHEADER     => [
 				'Content-Type: application/json; charset=UTF-8',
-				'X-Access-Token: '.$this->getClient()->getAccessToken(),
+				'X-Access-Token: '.$this->getClient()->getAccessTokenHeader(),
 			],
 		];
 

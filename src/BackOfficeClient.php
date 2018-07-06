@@ -100,6 +100,21 @@ class BackOfficeClient {
 	}
 
 	/**
+	 * Gets the full access token header, to send along with the request
+	 * First gets the access token and prepends the access token type to validate it
+	 */
+	public function getAccessTokenHeader(): string {
+
+		$header = [
+			$this->getAccessToken(),
+		];
+
+		array_unshift($header, $this->getAccessTokenType());
+
+		return join(' ', $header);
+	}
+
+	/**
 	 * Gets an active access token
 	 * If the access token is empty it attempts to get one
 	 * If the access token has expired, it attempts to get a new one with the refresh token
