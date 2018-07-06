@@ -78,8 +78,6 @@ class Request {
 
 		$json = $this->handleResponse($ch);
 
-		var_dump($json);
-		die;
 	}
 
 	/**
