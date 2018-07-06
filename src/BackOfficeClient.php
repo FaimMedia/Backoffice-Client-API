@@ -15,6 +15,7 @@ class BackOfficeClient {
 	protected $_clientSecret;
 
 	protected $_accessToken;
+	protected $_accessTokenType;
 	protected $_accessTokenExpire;
 
 	private $request;
@@ -92,6 +93,13 @@ class BackOfficeClient {
 	}
 
 	/**
+	 * Gets the access token type, in example: Bearer
+	 */
+	public function getAccessTokenType(): ?string {
+		return $this->_accessTokenType;
+	}
+
+	/**
 	 * Gets an active access token
 	 * If the access token is empty it attempts to get one
 	 * If the access token has expired, it attempts to get a new one with the refresh token
@@ -108,10 +116,11 @@ class BackOfficeClient {
 	}
 
 	/**
-	 * Set a custom access token
+	 * Sets an access token, this may also be called publicly to set a previously optained access token
 	 */
-	public function setAccessToken(string $accessToken, DateTime $accessTokenExpire): self {
+	public function setAccessToken(string $accessToken, string $accessTokenType, DateTime $accessTokenExpire): self {
 		$this->_accessToken = $accessToken;
+		$this->_accessTokenType = $accessTokenType;
 		$this->_accessTokenExpire = $accessTokenExpire;
 
 		return $this;
