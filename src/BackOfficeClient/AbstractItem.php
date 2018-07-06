@@ -20,18 +20,6 @@ class AbstractItem {
 	public function __construct(Request $request, $data = []) {
 		$this->request = $request;
 
-		if(array_key_exists('stats', $data)) {
-			$this->stats = $data['stats'];
-
-			unset($data['stats']);
-		}
-
-		if(array_key_exists('_links', $data)) {
-			$this->_links = $data['_links'];
-
-			unset($data['_links']);
-		}
-
 		$this->set($data);
 	}
 
@@ -121,13 +109,4 @@ class AbstractItem {
 	public function toArray() {
 		return $this->data;
 	}
-
-	public function getStats() {
-		return $this->_stats;
-	}
-
-	public function getLinks() {
-		return $this->_links;
-	}
-
 }
