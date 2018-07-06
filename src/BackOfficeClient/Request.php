@@ -189,6 +189,7 @@ class Request {
 				$errorMessage = 'Unspecified error occurred';
 
 				if($this->isDebug()) {
+					var_dump($info);
 					var_dump($response);
 				}
 			}
