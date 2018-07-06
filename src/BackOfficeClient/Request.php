@@ -95,15 +95,26 @@ class Request {
 			],
 		];
 
-		if($type != 'GET' && !empty($data)) {
-			$json = json_encode($data);
 		if($this->isDebug()) {
 			$options[CURLINFO_HEADER_OUT] = true;
 		}
 
-			$options += [
-				CURLOPT_POSTFIELDS => $json,
-			];
+		if(!empty($data)) {
+			if($type != 'GET') {
+
+			// is post body
+				$options[CURLURL_POST] = true;
+				$options[CURLOPT_POSTFIELDS] = $data;
+			} else {
+
+			// is url query
+				$url = $options[CURLOPT_URL];
+
+				$url .= (strpos($url, '?') !== false ? '&' : '?');
+				$url .= http_build_query($data);
+
+				$options[CURLOPT_URL] .= $url;
+			}
 		}
 
 		$ch = curl_init();
