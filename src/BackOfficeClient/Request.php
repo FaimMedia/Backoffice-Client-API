@@ -161,7 +161,7 @@ class Request {
 		}
 
 		if($isError) {
-			$errorMessage = 'Unspecified error occurred';
+			$errorMessage = null;
 
 			if(isset($json['error'])) {
 				$errorMessage = $json['error'];
@@ -173,6 +173,14 @@ class Request {
 
 			if(!empty($json['error'])) {
 				error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
+			}
+
+			if(!$errorMessage) {
+				$errorMessage = 'Unspecified error occurred';
+
+				if($this->isDebug()) {
+					var_dump($response);
+				}
 			}
 
 			throw new RequestException('Backoffice API error: '.$errorMessage, (int)$httpCode * -1);
