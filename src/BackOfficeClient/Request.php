@@ -11,11 +11,6 @@ class Request {
 	const USER_AGENT = 'FaimMedia/PHP-Backoffice-Client-API';
 
 	private $_client;
-
-	private $dataCenter;
-	private $apiKey;
-
-	private $fullApiKey;
 	private $_debug = false;
 
 	/**
