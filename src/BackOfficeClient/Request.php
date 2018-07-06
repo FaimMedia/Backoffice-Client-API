@@ -25,10 +25,16 @@ class Request {
 		$this->setClient($client);
 	}
 
+	/**
+	 * Get parent client
+	 */
 	public function getClient(): Client {
 		return $this->_client;
 	}
 
+	/**
+	 * Set client
+	 */
 	protected function setClient(Client $client): self {
 		$this->_client = $client;
 
