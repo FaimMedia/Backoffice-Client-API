@@ -70,6 +70,10 @@ class Request {
 			],
 		];
 
+		if($this->isDebug()) {
+			$options[CURLINFO_HEADER_OUT] = true;
+		}
+
 		curl_setopt_array($ch, $options);
 
 		$json = $this->handleResponse($ch);
@@ -95,6 +99,9 @@ class Request {
 
 		if($type != 'GET' && !empty($data)) {
 			$json = json_encode($data);
+		if($this->isDebug()) {
+			$options[CURLINFO_HEADER_OUT] = true;
+		}
 
 			$options += [
 				CURLOPT_POSTFIELDS => $json,
@@ -125,6 +132,10 @@ class Request {
 		$httpCode = (int)$info['http_code'];
 
 		$isError = ((int)substr((string)$httpCode, 0, 2) !== 20);
+
+		if($this->isDebug()) {
+			var_dump($info);
+		}
 
 		$json = json_decode($response, true);
 
