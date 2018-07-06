@@ -67,6 +67,9 @@ class Request {
 				'client_id'     => $clientId,
 				'client_secret' => $clientSecret,
 			],
+			CURLOPT_HTTPHEADER     => [
+				'Expect: ',
+			],
 		];
 
 		if($this->isDebug()) {
@@ -92,6 +95,7 @@ class Request {
 			CURLOPT_CUSTOMREQUEST  => strtoupper($type),
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER     => [
+				'Expect: ',
 				'X-Access-Token: '.$this->getClient()->getAccessTokenHeader(),
 			],
 		];
