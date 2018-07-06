@@ -3,6 +3,7 @@
 namespace FaimMedia;
 
 use FaimMedia\BackOfficeClient\Request,
+    FaimMedia\BackOfficeClient\Customer,
 	FaimMedia\BackOfficeClient\Folio,
 	FaimMedia\BackOfficeClient\Invoice;
 
@@ -168,6 +169,19 @@ class BackOfficeClient {
 		}
 
 		return $folio;
+	}
+
+	/**
+	 * Get customer
+	 */
+	public function customer($id = null) {
+		$customer = new Customer([], $this->request);
+
+		if($id) {
+			return $customer->getById($id);
+		}
+
+		return $customer;
 	}
 
 	/**
