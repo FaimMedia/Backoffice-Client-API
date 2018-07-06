@@ -57,18 +57,16 @@ class Request {
 	 */
 	public function authorize(int $clientId, string $clientSecret, string $grantType = 'client_credentials') {
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->createUrl('api/auth/token.json'));
 
 		$options = [
+			CURLOPT_URL            => $this->createUrl('api/auth/token.json'),
+			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POST           => 1,
+			CURLOPT_POST           => true,
 			CURLOPT_POSTFIELDS     => [
 				'grant_type'    => $grantType,
 				'client_id'     => $clientId,
 				'client_secret' => $clientSecret,
-			],
-			CURLOPT_HTTPHEADER     => [
-				'Content-Type: application/json; charset=UTF-8',
 			],
 		];
 
@@ -84,12 +82,13 @@ class Request {
 	 * Execute request and automatically add access token
 	*/
 	public function request($uri, $type = 'GET', $data = []) {
+
 		$options = [
+			CURLOPT_URL            => $this->createUrl($uri),
+			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_CUSTOMREQUEST  => strtoupper($type),
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_HTTPHEADER     => [
-				'Content-Type: application/json; charset=UTF-8',
 				'X-Access-Token: '.$this->getClient()->getAccessTokenHeader(),
 			],
 		];
