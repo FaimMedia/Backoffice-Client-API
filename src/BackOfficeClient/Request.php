@@ -141,15 +141,21 @@ class Request {
 		}
 
 		if($isError) {
+			$errorMessage = 'Unspecified error occurred';
+
+			if(isset($json['error'])) {
+				$errorMessage = $json['error'];
+
+				if(is_array($errorMessage)) {
+					$errorMessage = $errorMessage[0]['message'];
+				}
+			}
+
 			if(!empty($json['error'])) {
 				error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
 			}
 
-			if(is_array($json) && (!empty($json['error']))) {
-				throw new RequestException('Backoffice API error: '.(!empty($json['error'][0]['message']) ? $json['error'][0]['message'] : ''));
-			}
-
-			throw new RequestException('Undefined Backoffice API error, HTTP status code: '.$httpCode);
+			throw new RequestException('Backoffice API error: '.$errorMessage, (int)$httpCode * -1);
 		}
 
 		return $json;
