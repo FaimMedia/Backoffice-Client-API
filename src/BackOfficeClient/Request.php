@@ -114,7 +114,7 @@ class Request {
 				$url .= (strpos($url, '?') !== false ? '&' : '?');
 				$url .= http_build_query($data);
 
-				$options[CURLOPT_URL] .= $url;
+				$options[CURLOPT_URL] = $url;
 			}
 		}
 
