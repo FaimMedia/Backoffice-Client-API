@@ -2,40 +2,20 @@
 
 namespace FaimMedia\BackOfficeClient;
 
-use FaimMedia\BackOfficeClient;
+use FaimMedia\BackOfficeClient\AbstractResult;
 
 use UnexpectedValueException;
 
-class FolioItem extends AbstractItem {
+class FolioItem extends AbstractResult {
 
-	public function delete() {
-		$this->request->request('folio/'.$this->getId(), 'DELETE');
-
-		$this->data = null;
+	/**
+	 * Set API URI
+	 */
+	protected function getUri(): string {
+		return 'folio/folio';
 	}
 
-	public function save() {
-		$data = $this->data;
-
-	// validate data
-		$this->validate($data);
-
-		if($this->getId()) {
-			$response = $this->request->request('folio/'.$this->getId(), 'PATCH', $data);
-		} else {
-			$response = $this->request->request('folio', 'POST', $data);
-		}
-
-		if($response) {
-			$this->isSaved = true;
-
-			return $this->set($response, null, false);
-		}
-
-		return false;
-	}
-
-	private function validate($data) {
+	protected function validate($data) {
 
 		/*foreach(['name', 'permission_reminder'] as $field) {
 			if(empty($data[$field])) {
