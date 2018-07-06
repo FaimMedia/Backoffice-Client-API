@@ -78,6 +78,7 @@ class Request {
 
 		$json = $this->handleResponse($ch);
 
+		return $json;
 	}
 
 	/**
