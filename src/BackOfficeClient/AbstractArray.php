@@ -129,4 +129,21 @@ abstract class AbstractArray implements ArrayAccess, Iterator, Countable {
 
 		return $this->_data[$key];
 	}
+
+	/**
+	 * Convert all to array
+	 */
+	public function toArray(): array {
+		$results = [];
+		foreach($this as $item) {
+			if($item instanceof AbstractResult) {
+				$results[] = $item->toArray();
+				continue;
+			}
+
+			$results[] = $item;
+		}
+
+		return $results;
+	}
 }
