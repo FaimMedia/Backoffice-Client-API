@@ -107,9 +107,15 @@ class Request {
 		if(!empty($data)) {
 			if($type != 'GET') {
 
+				$json = json_encode($data, JSON_PRETTY_PRINT);
+
 			// is post body
 				$options[CURLOPT_POST] = true;
-				$options[CURLOPT_POSTFIELDS] = $data;
+				$options[CURLOPT_POSTFIELDS] = $json;
+
+				$options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
+				$options[CURLOPT_HTTPHEADER][] = 'Content-Length: '.strlen($json);
+
 			} else {
 
 			// is url query
