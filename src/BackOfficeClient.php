@@ -121,10 +121,13 @@ class BackOfficeClient {
 	 */
 	public function getAccessToken(): string {
 		if(!$this->_accessToken || $this->isAccessTokenExpired()) {
+			$json = $this->request->authorize($this->getClientId(), $this->getClientSecret());
 
-			$data = $this->request->authorize($this->getClientId(), $this->getClientSecret());
+			$data = $json['data'];
 
-			$this->_accessToken = $data[''];
+			$expireDateTime = new DateTime($data['expireDateTime']);
+
+			$this->setAccessToken($data['accessToken'], $data['accessTokenType'], $expireDateTime);
 		}
 
 		return $this->_accessToken;
