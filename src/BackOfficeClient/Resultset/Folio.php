@@ -1,8 +1,9 @@
 <?php
 
-namespace FaimMedia\BackOfficeClient;
+namespace FaimMedia\BackOfficeClient\Resultset;
 
-use FaimMedia\BackOfficeClient\FolioItem;
+use FaimMedia\BackofficeClient\AbstractResults,
+    FaimMedia\BackOfficeClient\FolioItem;
 
 class Folio extends AbstractResults {
 

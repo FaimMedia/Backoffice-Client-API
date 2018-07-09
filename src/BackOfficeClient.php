@@ -3,9 +3,9 @@
 namespace FaimMedia;
 
 use FaimMedia\BackOfficeClient\Request,
-    FaimMedia\BackOfficeClient\Customer,
-	FaimMedia\BackOfficeClient\Folio,
-	FaimMedia\BackOfficeClient\Invoice;
+    FaimMedia\BackOfficeClient\Resultset\Customer,
+	FaimMedia\BackOfficeClient\Resultset\Folio,
+	FaimMedia\BackOfficeClient\Resultset\Invoice;
 
 use DateTime;
 

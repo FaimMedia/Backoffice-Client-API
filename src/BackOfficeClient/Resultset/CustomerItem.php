@@ -1,17 +1,17 @@
 <?php
 
-namespace FaimMedia\BackOfficeClient;
+namespace FaimMedia\BackOfficeClient\Resultset;
 
 use FaimMedia\BackOfficeClient\AbstractResult;
 
 use UnexpectedValueException;
 
-class CustomerAddressItem extends AbstractResult {
+class CustomerItem extends AbstractResult {
 
 	/**
 	 * Set API URI
 	 */
 	protected function getUri(): string {
-		return 'customer/address/';
+		return 'customer/customer/';
 	}
 }
