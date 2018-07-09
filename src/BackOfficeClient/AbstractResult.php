@@ -129,18 +129,45 @@ abstract class AbstractResult {
 	}
 
 	public function set($name, $value = null, $merge = true) {
-		if(is_array($name)) {
-			if($merge) {
-				$this->data = array_merge($this->data, $name);
+		$relations = [];
+		if(method_exists($this, 'getRelations')) {
+			$relations = $this->getRelations();
+		}
+
+		$newData = $name;
+
+		$isIndividual = false;
+		if(!is_array($name)) {
+			$isIndividual = true;
+
+			$newData = [
+				$name => $value,
+			];
+		}
+
+		foreach($newData as $key => $value) {
+			if(!array_key_exists($key, $relations) || !is_array($value)) {
+				continue;
+			}
+
+			$relation = $relations[$key];
+
+			$newData[$key] = new $relation($value, $this->getParent());
+		}
+
+		if($merge) {
+			if($isIndividual) {
+				$this->data = array_merge_recursive($this->data, $newData);
 			} else {
-				$this->data += $name;
+				$this->data = array_merge($this->data, $newData);
 			}
 		} else {
-			if($merge && array_key_exists($name, $this->data) && is_array($name, $this->data)) {
-				$this->data[$name] = array_merge($this->data[$name], $name);
-			} else {
-				$this->data[$name] = $value;
-			}
+			$this->data = $newData;
+		}
+
+	// make sure id key is on top
+		if(isset($this->data['id'])) {
+			$this->data = ['id' => $this->data['id']] + $this->data;
 		}
 
 		return $this;
