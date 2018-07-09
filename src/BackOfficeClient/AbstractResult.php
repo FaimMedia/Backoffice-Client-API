@@ -215,6 +215,7 @@ abstract class AbstractResult {
 
 			if($data instanceof ArrayResults) {
 				$array[$key] = $data->toArray();
+				continue;
 			}
 
 			$array[$key] = $data;
