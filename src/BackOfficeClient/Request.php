@@ -87,7 +87,12 @@ class Request {
 	/**
 	 * Execute request and automatically add access token
 	*/
-	public function request($uri, $type = 'GET', $data = []) {
+	public function request($uri, $type = 'GET', $data = [], $dataType = 'json') {
+
+		$contentType = 'application/json';
+		if($dataType == 'binary') {
+			$contentType = 'application/octet-stream';
+		}
 
 		$options = [
 			CURLOPT_URL            => $this->createUrl($uri),
@@ -96,6 +101,7 @@ class Request {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER     => [
 				'Expect: ',
+				'Content-Type: '.$contentType,
 				'X-Access-Token: '.$this->getClient()->getAccessTokenHeader(),
 			],
 		];
@@ -145,60 +151,74 @@ class Request {
 			$response = curl_exec($ch);
 		}
 
+		$body = $response;
+
 		$info = curl_getinfo($ch);
 		$error = curl_error($ch);
 
 		$httpCode = (int)$info['http_code'];
+		$contentType = $info['content_type'];
+
+	// check content json
+		$isJson = (substr($contentType, 0, 16) == 'application/json');
 
 		$isError = ((int)substr((string)$httpCode, 0, 2) !== 20);
 
-		if($this->isDebug()) {
-			var_dump($info);
-			var_dump($response);
-		}
+		if($isJson) {
+			$json = json_decode($body, true);
 
-		$json = json_decode($response, true);
-
-		if(json_last_error() !== JSON_ERROR_NONE) {
-			if($error) {
-				throw new RequestException('Invalid HTTP status code: '.$httpCode);
-			}
-
-			if(!$isError) {
-				return true;
-			}
-
-			throw new RequestException('The response did not return a valid JSON string');
-		}
-
-		if($isError) {
-			$errorMessage = null;
-
-			if(isset($json['error'])) {
-				$errorMessage = $json['error'];
-
-				if(is_array($errorMessage)) {
-					$errorMessage = $errorMessage[0]['message'];
+			if(json_last_error() !== JSON_ERROR_NONE) {
+				if($error) {
+					throw new RequestException('Invalid HTTP status code: '.$httpCode);
 				}
+
+				if(!$isError) {
+					return true;
+				}
+
+				throw new RequestException('The response did not return a valid JSON string');
 			}
 
-			if(!empty($json['error'])) {
-				error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
-			}
+			if($isError) {
+				$errorMessage = null;
 
-			if(!$errorMessage) {
-				$errorMessage = 'Unspecified error occurred';
+				if(isset($json['error'])) {
+					$errorMessage = $json['error'];
+
+					if(is_array($errorMessage)) {
+						$errorMessage = $errorMessage[0]['message'];
+					}
+				}
+
+				if(!empty($json['error'])) {
+					error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
+				}
+
+				if(!$errorMessage) {
+					$errorMessage = 'Unspecified error occurred';
+				}
 
 				if($this->isDebug()) {
 					var_dump($info);
-					var_dump($response);
+					var_dump($body);
 				}
+
+				throw new RequestException('Backoffice API error: '.$errorMessage, (int)$httpCode * -1);
 			}
 
-			throw new RequestException('Backoffice API error: '.$errorMessage, (int)$httpCode * -1);
+			return $json;
 		}
 
-		return $json;
+		if($isError) {
+			if($this->isDebug()) {
+				var_dump($info);
+				var_dump($body);
+			}
+
+			throw new RequestException('Backoffice API error ['.$httpCode.']', (int)$httpCode * -1);
+		}
+
+		return $body;
 	}
 
 	/**
