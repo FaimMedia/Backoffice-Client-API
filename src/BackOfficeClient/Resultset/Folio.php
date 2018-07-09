@@ -20,4 +20,17 @@ class Folio extends AbstractResults {
 	protected function getItemClassName(): string {
 		return FolioItem::class;
 	}
+
+	/**
+	 * Get folio line relation
+	 */
+	public function line($id = null) {
+		$folioLine = new FolioLine([], $this->getRequest());
+
+		if($id) {
+			return $folioLine->getById($id);
+		}
+
+		return $folioLine;
+	}
 }
