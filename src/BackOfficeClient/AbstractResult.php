@@ -218,7 +218,9 @@ abstract class AbstractResult {
 		$data = $this->toArray(true);
 
 	// validate data
-		$this->validate($data);
+		if(method_exists($this, 'validate')) {
+			$this->validate($data);
+		}
 
 		if($this->getId()) {
 			$response = $this->getRequest()->request($this->getUri().'save.json', 'PATCH', $data);
