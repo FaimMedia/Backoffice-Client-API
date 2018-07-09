@@ -9,6 +9,8 @@ use FaimMedia\BackOfficeClient,
 
 use FaimMedia\BackOfficeClient\Exception\SaveException;
 
+use Exception;
+
 abstract class AbstractResult {
 
 	private $_parent;
@@ -100,6 +102,8 @@ abstract class AbstractResult {
 
 			return null;
 		}
+
+		throw new Exception('Method `'.$name.'` does not exist on `'.__CLASS__.'`');
 	}
 
 	public function __get($name) {
