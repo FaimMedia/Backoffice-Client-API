@@ -154,6 +154,7 @@ class Request {
 
 		if($this->isDebug()) {
 			var_dump($info);
+			var_dump($response);
 		}
 
 		$json = json_decode($response, true);
