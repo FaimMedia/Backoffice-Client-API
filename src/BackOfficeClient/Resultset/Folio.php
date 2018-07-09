@@ -3,7 +3,7 @@
 namespace FaimMedia\BackOfficeClient\Resultset;
 
 use FaimMedia\BackofficeClient\AbstractResults,
-    FaimMedia\BackOfficeClient\FolioItem;
+    FaimMedia\BackOfficeClient\Resultset\FolioItem;
 
 class Folio extends AbstractResults {
 
