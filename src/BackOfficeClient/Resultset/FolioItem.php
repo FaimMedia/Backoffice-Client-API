@@ -13,5 +13,12 @@ class FolioItem extends AbstractResult {
 		return 'folio/folio/';
 	}
 
+	/**
+	 * Relations
+	 */
+	protected function getRelations(): array {
+		return [
+			'folio_line'  => FolioLineItem::class,
+		];
 	}
 }
