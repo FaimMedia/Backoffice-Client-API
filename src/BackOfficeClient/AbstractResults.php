@@ -14,7 +14,7 @@ abstract class AbstractResults extends AbstractArray {
 	/**
 	 * Custom constructor to set both data and request method
 	 */
-	public function __construct($data = [], Request $request) {
+	public function __construct($data = [], Request $request = null) {
 		$this->_data = $data;
 		$this->_request = $request;
 	}
@@ -23,7 +23,34 @@ abstract class AbstractResults extends AbstractArray {
 	 * Get request instance
 	 */
 	public function getRequest(): Request {
+
+		if(!$this->hasRequest()) {
+			throw new Exception('This object has no Request handler');
+		}
+
 		return $this->_request;
+	}
+
+	/**
+	 * Check request instance
+	 */
+	public function hasRequest(): bool {
+		return ($this->_request instanceof Request);
+	}
+
+	/**
+	 * Set request instance
+	 */
+	public function setRequest(Request $request): self {
+
+	// fail silently
+		if($this->hasRequest()) {
+			return $this;
+		}
+
+		$this->_request = $request;
+
+		return $this;
 	}
 
 	abstract protected function getUri(): string;
