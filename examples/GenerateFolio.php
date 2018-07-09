@@ -9,7 +9,7 @@ define('CLIENT_ID', @$argv[1]);
 define('CLIENT_SECRET', @$argv[2]);
 
 define('CUSTOMER_ID', 11);
-define('CUSTOMER_CONTACT_ID', 11);
+define('CUSTOMER_CONTACT_ID', 16);
 
 $client = new BackOfficeClient();
 $client
