@@ -22,4 +22,29 @@ class Customer extends AbstractResults {
 	protected function getItemClassName(): string {
 		return CustomerItem::class;
 	}
+
+	/**
+	 * Get customer address relation
+	 */
+	public function address($id = null) {
+		$customerAddress = new CustomerAddress([], $this->getRequest());
+
+		if($id) {
+			return $customerAddress->getById($id);
+		}
+
+		return $customerAddress;
+	}
+	/**
+	 * Get customer contact relation
+	 */
+	public function contact($id = null) {
+		$customerContact = new CustomerContact([], $this->getRequest());
+
+		if($id) {
+			return $customerContact->getById($id);
+		}
+
+		return $customerContact;
+	}
 }
