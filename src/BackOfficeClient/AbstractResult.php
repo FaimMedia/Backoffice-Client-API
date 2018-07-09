@@ -213,7 +213,7 @@ abstract class AbstractResult {
 				continue;
 			}
 
-			if($data instanceof ArrayResults) {
+			if($data instanceof AbstractResults) {
 				$array[$key] = $data->toArray();
 				continue;
 			}
