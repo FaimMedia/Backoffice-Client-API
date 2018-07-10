@@ -71,7 +71,7 @@ abstract class AbstractResults extends AbstractArray {
 		if($response) {
 			$className = $this->getItemClassName();
 
-			return new $className($response, $this);
+			return new $className($response['data'], $this);
 		}
 
 		throw new ItemException('Requested item `'.$id.'` does not exists');
