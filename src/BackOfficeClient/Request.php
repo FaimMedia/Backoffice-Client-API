@@ -140,6 +140,28 @@ class Request {
 		return $this->handleResponse($ch, null, $dataType);
 	}
 
+	/**
+	 * Parse headers string to headers array
+	 */
+	protected function parseHeaders(string $headers): array {
+
+		$headers = explode("\r\n", $headers);
+
+		$keys = [];
+		$values = [];
+
+		foreach($headers as $header) {
+			$name = strstr($header, ':', true);
+
+			$keys[] = strtolower($name);
+			$values[] = trim(substr($header, strlen($name) + 1));
+		}
+
+		$headers = array_combine($keys, $values);
+
+		array_filter($headers);
+
+		return $headers;
 	}
 
 	/**
