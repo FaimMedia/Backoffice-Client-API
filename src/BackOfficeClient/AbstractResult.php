@@ -25,6 +25,8 @@ abstract class AbstractResult {
 	public function __construct($data = [], AbstractResults $parent = null) {
 		if($parent) {
 			$this->setParent($parent);
+
+			$this->isSaved = true;
 		}
 
 		$this->set($data);
