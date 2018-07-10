@@ -137,15 +137,15 @@ class Request {
 		$ch = curl_init();
 		curl_setopt_array($ch, $options);
 
-		$json = $this->handleResponse($ch);
+		return $this->handleResponse($ch, null, $dataType);
+	}
 
-		return $json;
 	}
 
 	/**
 	 * Executes CURL requests and handles responses
 	 */
-	protected function handleResponse($ch, $response = null) {
+	protected function handleResponse($ch, $response = null, $dataType = 'json') {
 
 		if($response === null) {
 			$response = curl_exec($ch);
@@ -160,7 +160,7 @@ class Request {
 		$contentType = $info['content_type'];
 
 	// check content json
-		$isJson = (substr($contentType, 0, 16) == 'application/json');
+		$isJson = (substr($contentType, 0, 16) == 'application/json' || $dataType == 'json');
 
 		$isError = ((int)substr((string)$httpCode, 0, 2) !== 20);
 
@@ -168,12 +168,12 @@ class Request {
 			$json = json_decode($body, true);
 
 			if(json_last_error() !== JSON_ERROR_NONE) {
-				if($error) {
-					throw new RequestException('Invalid HTTP status code: '.$httpCode);
+				if($this->isDebug()) {
+					var_dump($body);
 				}
 
-				if(!$isError) {
-					return true;
+				if($isError && $httpCode) {
+					throw new RequestException('Invalid HTTP status code: '.$httpCode);
 				}
 
 				throw new RequestException('The response did not return a valid JSON string');
@@ -199,7 +199,6 @@ class Request {
 				}
 
 				if($this->isDebug()) {
-					var_dump($info);
 					var_dump($body);
 				}
 
@@ -211,7 +210,6 @@ class Request {
 
 		if($isError) {
 			if($this->isDebug()) {
-				var_dump($info);
 				var_dump($body);
 			}
 
