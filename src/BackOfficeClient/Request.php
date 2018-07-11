@@ -226,7 +226,7 @@ class Request {
 					var_dump($body);
 				}
 
-				throw new RequestException('Backoffice API error: '.$errorMessage.', '.$path, (int)$httpCode * -1);
+				throw new RequestException('Backoffice API error ['.$httpCode.']: '.$errorMessage.', '.$path, (int)$httpCode * -1);
 			}
 
 			return $json;
