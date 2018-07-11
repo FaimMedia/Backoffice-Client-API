@@ -186,6 +186,8 @@ class Request {
 
 		$isError = ((int)substr((string)$httpCode, 0, 2) !== 20);
 
+		$path = parse_url($info['url'], PHP_URL_PATH);
+
 		if($isJson) {
 			$json = json_decode($body, true);
 
@@ -224,7 +226,7 @@ class Request {
 					var_dump($body);
 				}
 
-				throw new RequestException('Backoffice API error: '.$errorMessage, (int)$httpCode * -1);
+				throw new RequestException('Backoffice API error: '.$errorMessage.', '.$path, (int)$httpCode * -1);
 			}
 
 			return $json;
@@ -235,7 +237,7 @@ class Request {
 				var_dump($body);
 			}
 
-			throw new RequestException('Backoffice API error ['.$httpCode.']', (int)$httpCode * -1);
+			throw new RequestException('Backoffice API error ['.$httpCode.'], '. $path, (int)$httpCode * -1);
 		}
 
 		return $body;
