@@ -225,10 +225,6 @@ class Request {
 			$json = json_decode($body, true);
 
 			if(json_last_error() !== JSON_ERROR_NONE) {
-				if($this->isDebug()) {
-					var_dump($body);
-				}
-
 				if($isError && $httpCode) {
 					throw new RequestException('Invalid HTTP status code: '.$httpCode);
 				}
@@ -255,10 +251,6 @@ class Request {
 					$errorMessage = 'Unspecified error occurred';
 				}
 
-				if($this->isDebug()) {
-					var_dump($body);
-				}
-
 				throw new RequestException('Backoffice API error ['.$httpCode.']: '.$errorMessage.', '.$path, (int)$httpCode * -1);
 			}
 
@@ -266,10 +258,6 @@ class Request {
 		}
 
 		if($isError) {
-			if($this->isDebug()) {
-				var_dump($body);
-			}
-
 			throw new RequestException('Backoffice API error ['.$httpCode.'], '. $path, (int)$httpCode * -1);
 		}
 
