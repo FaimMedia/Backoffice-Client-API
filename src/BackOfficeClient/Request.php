@@ -8,10 +8,15 @@ use FaimMedia\BackOfficeClient\Exception\RequestException;
 
 class Request {
 
-	const USER_AGENT = 'FaimMedia/PHP-Backoffice-Client-API';
-
 	private $_client;
 	private $_debug = false;
+
+	protected $_curlOptions = [
+		CURLOPT_CONNECTTIMEOUT_MS => 3000,
+		CURLOPT_TIMEOUT_MS        => 3000,
+		CURLOPT_FAILONERROR       => true,
+		CURLOPT_USERAGENT         => 'FaimMedia/PHP-Backoffice-Client-API',
+	];
 
 	/**
 	 * Set parent Client class
@@ -53,13 +58,38 @@ class Request {
 	}
 
 	/**
+	 * Sets default curl options
+	 * Use the merge parameter to replace existing values
+	 */
+	public function setCurlOptions(array $options = [], $merge = true): self {
+		if($merge) {
+			$this->_curlOptions = array_merge(
+				$this->_curlOptions,
+				$options
+			);
+
+			return $this;
+		}
+
+		$this->_curlOptions += $options;
+
+		return $this;
+	}
+
+	/**
+	 * Returns an array with all specified default Curl options
+	 */
+	public function getCurlOptions(): array {
+		return $this->_curlOptions;
+	}
+
+	/**
 	 * Get access token
 	 */
 	public function authorize(int $clientId, string $clientSecret, string $grantType = 'client_credentials') {
 
 		$options = [
 			CURLOPT_URL            => $this->createUrl('api/auth/token.json'),
-			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST           => true,
 			CURLOPT_POSTFIELDS     => [
@@ -75,6 +105,8 @@ class Request {
 		if($this->isDebug()) {
 			$options[CURLINFO_HEADER_OUT] = true;
 		}
+
+		$options += $this->getCurlOptions();
 
 		$ch = curl_init();
 		curl_setopt_array($ch, $options);
@@ -96,7 +128,6 @@ class Request {
 
 		$options = [
 			CURLOPT_URL            => $this->createUrl($uri),
-			CURLOPT_USERAGENT      => self::USER_AGENT,
 			CURLOPT_CUSTOMREQUEST  => strtoupper($type),
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HTTPHEADER     => [
@@ -109,6 +140,8 @@ class Request {
 		if($this->isDebug()) {
 			$options[CURLINFO_HEADER_OUT] = true;
 		}
+
+		$options += $this->getCurlOptions();
 
 		if(!empty($data)) {
 			if($type != 'GET') {
