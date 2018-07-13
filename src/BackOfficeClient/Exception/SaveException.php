@@ -2,7 +2,7 @@
 
 namespace FaimMedia\BackOfficeClient\Exception;
 
-use Exception;
+use BaseException;
 
-class SaveException extends Exception {
+class SaveException extends BaseException {
 }

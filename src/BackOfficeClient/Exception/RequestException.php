@@ -2,8 +2,8 @@
 
 namespace FaimMedia\BackOfficeClient\Exception;
 
-use Exception;
+use BaseException;
 
-class RequestException extends Exception {
+class RequestException extends BaseException {
 
 }
