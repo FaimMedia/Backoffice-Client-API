@@ -221,25 +221,30 @@ class Request {
 
 		$path = parse_url($info['url'], PHP_URL_PATH);
 
+		$exception = new RequestException('Unspecified error occurred');
+		$exception->setUri($path);
+		$exception->setResponseCode($httpCode);
+		$exception->setResponseBody($body);
+
 		if($isJson) {
 			$json = json_decode($body, true);
 
 			if(json_last_error() !== JSON_ERROR_NONE) {
 				if($isError && $httpCode) {
-					throw new RequestException('Invalid HTTP status code: '.$httpCode);
+					$exception->setMessage('Invalid HTTP status code');
+					throw $exception;
 				}
 
-				throw new RequestException('The response did not return a valid JSON string');
+				$exception->setMessage('The response did not return a valid JSON string');
+				throw $exception;
 			}
 
 			if($isError) {
-				$errorMessage = null;
-
 				if(isset($json['error'])) {
 					$errorMessage = $json['error'];
 
 					if(is_array($errorMessage)) {
-						$errorMessage = $errorMessage[0]['message'];
+						$exception->setMessage($errorMessage[0]['message']);
 					}
 				}
 
@@ -247,18 +252,14 @@ class Request {
 					error_log(json_encode($json['error'], JSON_PRETTY_PRINT));
 				}
 
-				if(!$errorMessage) {
-					$errorMessage = 'Unspecified error occurred';
-				}
-
-				throw new RequestException('Backoffice API error ['.$httpCode.']: '.$errorMessage.', '.$path, (int)$httpCode * -1);
+				throw $exception;
 			}
 
 			return $json;
 		}
 
 		if($isError) {
-			throw new RequestException('Backoffice API error ['.$httpCode.'], '. $path, (int)$httpCode * -1);
+			throw $exception;
 		}
 
 		return $body;
