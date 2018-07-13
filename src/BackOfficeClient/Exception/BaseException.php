@@ -1,6 +1,8 @@
 <?php
 
-namespace FaimMedia\BackOfficeClient\Exception\BaseException;
+namespace FaimMedia\BackOfficeClient\Exception;
+
+use Exception;
 
 abstract class BaseException extends Exception {
 
